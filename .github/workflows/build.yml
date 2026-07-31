@@ -1,4 +1,4 @@
-name: Flutter Build All Platforms
+name: Flutter Build macOS
 
 on:
   push:
@@ -8,61 +8,9 @@ on:
   workflow_dispatch:
 
 env:
-  FLUTTER_VERSION: "3.24.0"
+  FLUTTER_VERSION: "3.44.6"
 
 jobs:
-  # ==================== Android APK ====================
-  android:
-    name: Build Android APK
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Build APK
-        run: flutter build apk --release
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: Android-APK
-          path: build/app/outputs/flutter-apk/app-release.apk
-
-  # ==================== Windows ====================
-  windows:
-    name: Build Windows
-    runs-on: windows-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Build Windows
-        run: flutter build windows --release
-
-      - name: Upload Windows
-        uses: actions/upload-artifact@v4
-        with:
-          name: Windows-Release
-          path: build/windows/x64/runner/Release/
-
   # ==================== macOS ====================
   macos:
     name: Build macOS
@@ -77,6 +25,9 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
 
+      - name: Disable analytics
+        run: flutter config --no-analytics
+
       - name: Install dependencies
         run: flutter pub get
 
@@ -86,36 +37,10 @@ jobs:
       - name: Zip App
         run: |
           cd build/macos/Build/Products/Release
-          zip -r FlutterPersonalCenter-macOS.zip *.app
+          zip -r ShiningPersonal-macOS.zip *.app
 
-      - name: Upload macOS
+      - name: Upload macOS App
         uses: actions/upload-artifact@v4
         with:
           name: macOS-App
-          path: build/macos/Build/Products/Release/FlutterPersonalCenter-macOS.zip
-
-  # ==================== Web ====================
-  web:
-    name: Build Web
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Build Web
-        run: flutter build web --release
-
-      - name: Upload Web
-        uses: actions/upload-artifact@v4
-        with:
-          name: Web-Build
-          path: build/web/
+          path: build/macos/Build/Products/Release/ShiningPersonal-macOS.zip
